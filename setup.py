@@ -54,5 +54,6 @@ setup(
     # $ pip install -e .[dev,test]
     extras_require={
         'test': ['pytest', 'pytest-cov'],
+        'dev': ['ipython']
     },
 )

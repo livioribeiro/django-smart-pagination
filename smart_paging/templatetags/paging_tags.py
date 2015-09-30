@@ -11,7 +11,7 @@ class Page:
 
 
 class Paginator:
-    def __init__(self, first_page, prev_page, page_range, next_page, last_page, current_page, query):
+    def __init__(self, first_page, prev_page, page_range, next_page, last_page, current_page):
         pages = list()
         for page_number in page_range:
             pages.append(Page(current_page, page_number))
@@ -21,10 +21,9 @@ class Paginator:
         self.pages = pages
         self.next = next_page
         self.last = last_page
-        self.query = query
 
 
-def get_paginator(page_obj, num_links, query='') -> Paginator:
+def make_paginator(page_obj, num_links) -> Paginator:
     number = page_obj.number
     page_count = len(page_obj.paginator.page_range)
 
@@ -51,13 +50,13 @@ def get_paginator(page_obj, num_links, query='') -> Paginator:
         start = number - (middle_point - 1) - 1  # zero indexed
         end = number + middle_point - 1  # zero indexed
 
-        # corrige exibição para número de links par
+        # fix for even number of links
         if num_links % 2 == 0:
             end += 1
 
         page_range = page_obj.paginator.page_range[start:end]
 
-    return Paginator(first_page, prev_page, page_range, next_page, last_page, number, query)
+    return Paginator(first_page, prev_page, page_range, next_page, last_page, number)
 
 
 @register.tag
@@ -105,14 +104,14 @@ class PaginationNode(template.Node):
             query = ''
 
         page_obj = self.page_obj.resolve(context)
-        paginator = get_paginator(page_obj, self.num_links, query)
+        paginator = make_paginator(page_obj, self.num_links)
         context.update({
             'paging_first': paginator.first,
             'paging_prev': paginator.prev,
-            'paging_links': paginator.links,
+            'paging_pages': paginator.pages,
             'paging_next': paginator.next,
             'paging_last': paginator.last,
-            'paging_query': paginator.query,
+            'paging_query': query,
         })
 
         return self.nodelist.render(context)
