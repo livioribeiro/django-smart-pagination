@@ -42,6 +42,6 @@ setup(
 
     extras_require={
         'test': ['pytest', 'pytest-cov', 'pytest-django'],
-        'dev': ['ipython']
+        'dev': ['Jinja2', 'ipython']
     },
 )
