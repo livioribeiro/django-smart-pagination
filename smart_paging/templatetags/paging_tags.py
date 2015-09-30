@@ -23,7 +23,7 @@ class Paginator:
         self.last = last_page
 
 
-def make_paginator(page_obj, num_links) -> Paginator:
+def make_paginator(page_obj, num_links):
     number = page_obj.number
     page_count = len(page_obj.paginator.page_range)
 
@@ -60,12 +60,12 @@ def make_paginator(page_obj, num_links) -> Paginator:
 
 
 @register.tag
-def paging(parser, token):
+def paginate(parser, token):
     contents = token.split_contents()
     try:
         if len(contents) == 3:
             tag_name, page_obj, num_links = contents
-            page_kwarg = 'page'
+            page_kwarg = None
         elif len(contents) == 4:
             tag_name, page_obj, num_links, page_kwarg = contents
         else:
@@ -77,9 +77,7 @@ def paging(parser, token):
             ' and, optionally, the "page_kwarg" value'.format(token.contents.split()[0])
         )
 
-    num_links = int(num_links)
-
-    nodelist = parser.parse(('endpager',))
+    nodelist = parser.parse(('endpaginate',))
     parser.delete_first_token()
 
     return PaginationNode(nodelist, page_obj, num_links, page_kwarg)
@@ -88,14 +86,14 @@ def paging(parser, token):
 class PaginationNode(template.Node):
     def __init__(self, nodelist, page_obj, num_links, page_kwarg):
         self.nodelist = nodelist
-        self.page_obj = template.Variable(page_obj)
+        self.page_obj = page_obj
         self.num_links = num_links
-        self.page_kwarg = page_kwarg
+        self.page_kwarg = page_kwarg.strip('"\'') if page_kwarg is not None else None
 
     def render(self, context):
 
         request = context['request']
-        if len(request.GET) > 0:
+        if self.page_kwarg is not None and len(request.GET) > 0:
             qs = request.GET.copy()
             if self.page_kwarg in qs:
                 qs.pop(self.page_kwarg)
@@ -103,8 +101,23 @@ class PaginationNode(template.Node):
         else:
             query = ''
 
-        page_obj = self.page_obj.resolve(context)
-        paginator = make_paginator(page_obj, self.num_links)
+        page_obj = template.Variable(self.page_obj).resolve(context)
+
+        try:
+            num_links = int(self.num_links)
+        except ValueError as error:
+            if self.num_links.startswith("'") or self.num_links.startswith('"'):
+                raise template.TemplateSyntaxError(error)
+
+            try:
+                num_links = template.Variable(self.num_links).resolve(context)
+            except template.VariableDoesNotExist:
+                raise
+
+            if not isinstance(num_links, int):
+                raise template.TemplateSyntaxError('Second parameter must be an int')
+
+        paginator = make_paginator(page_obj, num_links)
         context.update({
             'paging_first': paginator.first,
             'paging_prev': paginator.prev,

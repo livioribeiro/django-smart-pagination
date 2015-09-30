@@ -34,10 +34,9 @@ setup(
         'Environment :: Web Environment',
         'Framework :: Django',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License', # example license
+        'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        # Replace these appropriately if you are stuck on Python 2.
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
@@ -48,12 +47,8 @@ setup(
     keywords='django pagination page links',
     install_requires=['Django'],
 
-    # List additional groups of dependencies here (e.g. development
-    # dependencies). You can install these using the following syntax,
-    # for example:
-    # $ pip install -e .[dev,test]
     extras_require={
-        'test': ['pytest', 'pytest-cov'],
+        'test': ['pytest', 'pytest-cov', 'pytest-django'],
         'dev': ['ipython']
     },
 )
