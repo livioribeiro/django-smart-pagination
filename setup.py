@@ -1,12 +1,5 @@
-"""A setuptools based setup module.
-
-See:
-https://packaging.python.org/en/latest/distributing.html
-https://github.com/pypa/sampleproject
-"""
-
 import os
-from setuptools import setup, find_packages
+from setuptools import setup
 # To use a consistent encoding
 from codecs import open
 
@@ -20,12 +13,12 @@ with open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
-    name='django-smart-paging',
+    name='django-smart-pagination',
     version='1.0.0',
-    packages=['smart_paging'],
+    packages=['smart_pagination'],
     description='Generate pagination links in Django Templates',
     long_description=long_description,
-    url='https://github.com/livioribeiro/django-smart-paging',
+    url='https://github.com/livioribeiro/django-smart-pagination',
     author='Livio Ribeiro',
     author_email='livioribeiro@outlook.com',
     license='BSD',

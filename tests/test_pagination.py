@@ -1,6 +1,6 @@
 from django.core.paginator import Paginator
 import pytest
-from smart_paging.templatetags.paging_tags import make_paginator
+from smart_pagination.templatetags.pagination_tags import make_paginator
 
 even_num_links = 6
 odd_num_links = 5

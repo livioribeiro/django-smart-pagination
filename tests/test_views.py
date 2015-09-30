@@ -1,17 +1,22 @@
+import string
 from django.http import HttpRequest
 from django.template import Context, Template, TemplateSyntaxError, VariableDoesNotExist
 import pytest
 
-from .test_paging import paginator
+from .test_pagination import paginator
+
+
+FORMAT_STRING = string.Template('''
+{% load pagination_tags %}
+{% paginate $args %}
+    {% for page in paging_pages %}{{ page.number }}{% endfor %}
+    {{ paging_query }}
+{% endpaginate %}
+''')
 
 
 def test_pagination_without_query():
-    template_string = '''
-        {% load paging_tags %}
-        {% paginate page_obj 5 %}
-            {% for page in paging_pages %}{{ page.number }}{% endfor %}
-        {% endpaginate %}
-        '''
+    template_string = FORMAT_STRING.substitute(args='page_obj 5')
 
     request = HttpRequest()
     tpl = Template(template_string)
@@ -24,13 +29,7 @@ def test_pagination_without_query():
 
 
 def test_pagination_with_query_without_page_kwarg():
-    template_string = '''
-        {% load paging_tags %}
-        {% paginate page_obj 5 %}
-            {% for page in paging_pages %}{{ page.number }}{% endfor %}
-            {{ paging_query }}
-        {% endpaginate %}
-        '''
+    template_string = FORMAT_STRING.substitute(args='page_obj 5')
 
     request = HttpRequest()
     request.GET.update({
@@ -49,13 +48,7 @@ def test_pagination_with_query_without_page_kwarg():
 
 
 def test_pagination_with_query_and_page_kwarg():
-    template_string = '''
-        {% load paging_tags %}
-        {% paginate page_obj 5 'page' %}
-            {% for page in paging_pages %}{{ page.number }}{% endfor %}
-            {{ paging_query }}
-        {% endpaginate %}
-        '''
+    template_string = FORMAT_STRING.substitute(args="page_obj 5 'page'")
 
     request = HttpRequest()
     request.GET.update({
@@ -77,12 +70,7 @@ def test_pagination_with_query_and_page_kwarg():
 
 
 def test_pagination_without_num_links_variable():
-    template_string = '''
-        {% load paging_tags %}
-        {% paginate page_obj num_links %}
-            {% for page in paging_pages %}{{ page.number }}{% endfor %}
-        {% endpaginate %}
-        '''
+    template_string = FORMAT_STRING.substitute(args='page_obj num_links')
 
     request = HttpRequest()
     tpl = Template(template_string)
@@ -96,36 +84,21 @@ def test_pagination_without_num_links_variable():
 
 
 def test_pagination_without_num_links_should_fail():
-    template_string = '''
-        {% load paging_tags %}
-        {% paginate page_obj %}
-            {% for page in paging_pages %}{{ page.number }}{% endfor %}
-        {% endpaginate %}
-        '''
+    template_string = FORMAT_STRING.substitute(args='page_obj')
 
     with pytest.raises(TemplateSyntaxError):
         Template(template_string)
 
 
 def test_pagination_with_too_many_args_should_fail():
-    template_string = '''
-        {% load paging_tags %}
-        {% paginate page_obj arg2 arg3 arg4 %}
-            {% for page in paging_pages %}{{ page.number }}{% endfor %}
-        {% endpaginate %}
-        '''
+    template_string = FORMAT_STRING.substitute(args='page_obj arg2 arg3 arg4')
 
     with pytest.raises(TemplateSyntaxError):
         Template(template_string)
 
 
 def test_pagination_with_non_existent_variable():
-    template_string = '''
-        {% load paging_tags %}
-        {% paginate page_obj dont_exist %}
-            {% for page in paging_pages %}{{ page.number }}{% endfor %}
-        {% endpaginate %}
-        '''
+    template_string = FORMAT_STRING.substitute(args='page_obj does_not_exist')
 
     request = HttpRequest()
     tpl = Template(template_string)
@@ -139,12 +112,7 @@ def test_pagination_with_non_existent_variable():
 
 
 def test_pagination_with_str_num_links_should_fail():
-    template_string = '''
-        {% load paging_tags %}
-        {% paginate page_obj 'abc' %}
-            {% for page in paging_pages %}{{ page.number }}{% endfor %}
-        {% endpaginate %}
-        '''
+    template_string = FORMAT_STRING.substitute(args="page_obj 'abc'")
 
     request = HttpRequest()
     tpl = Template(template_string)
@@ -158,12 +126,7 @@ def test_pagination_with_str_num_links_should_fail():
 
 
 def test_pagination_with_non_int_num_links_should_fail():
-    template_string = '''
-        {% load paging_tags %}
-        {% paginate page_obj 2.5 %}
-            {% for page in paging_pages %}{{ page.number }}{% endfor %}
-        {% endpaginate %}
-        '''
+    template_string = FORMAT_STRING.substitute(args='page_obj 2.5')
 
     request = HttpRequest()
     tpl = Template(template_string)
