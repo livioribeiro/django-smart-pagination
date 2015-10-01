@@ -11,6 +11,6 @@ env:
 # command to install dependencies
 install:
   - python setup.py install
-  - pip install -q 'Django$DJANGO_VERSION' pytest-django Jinja2
+  - pip install -q "Django$DJANGO_VERSION" pytest-django Jinja2
 # command to run tests
 script: py.test tests
