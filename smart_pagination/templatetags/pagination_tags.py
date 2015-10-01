@@ -7,7 +7,6 @@ from .. import pagination, error_messages as errors
 register = template.Library()
 
 
-@register.tag
 def paginate(parser, token):
     contents = token.split_contents()
 
@@ -27,6 +26,9 @@ def paginate(parser, token):
     parser.delete_first_token()
 
     return PaginationNode(nodelist, page_obj, num_links, page_kwarg)
+
+
+register.tag(paginate)
 
 
 class PaginationNode(template.Node):
