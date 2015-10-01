@@ -1,7 +1,6 @@
 language: python
 python:
   - "2.7"
-  - "3.2"
   - "3.3"
   - "3.4"
   - "3.5"
@@ -11,7 +10,7 @@ env:
   - DJANGO_VERSION=">=1.8,<1.9"
 # command to install dependencies
 install:
-  - "pip install -q Django$DJANGO_VERSION pytest-django Jinja2"
   - "python setup.py install"
+  - "pip install -q 'Django$DJANGO_VERSION' pytest-django Jinja2"
 # command to run tests
 script: py.test tests
