@@ -1,5 +1,5 @@
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 # To use a consistent encoding
 from codecs import open
 
@@ -15,7 +15,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 setup(
     name='django-smart-pagination',
     version='1.0.0',
-    packages=['smart_pagination'],
+    packages=find_packages(exclude=['tests']),
     description='Generate pagination links in Django Templates',
     long_description=long_description,
     url='https://github.com/livioribeiro/django-smart-pagination',
