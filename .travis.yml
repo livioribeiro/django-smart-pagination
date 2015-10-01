@@ -11,7 +11,7 @@ env:
   - DJANGO_VERSION=">=1.8,<1.9"
 # command to install dependencies
 install:
-  - "pip install -q Django==$DJANGO_VERSION"
+  - "pip install -q Django$DJANGO_VERSION"
   - "pip install -q .[test]"
 # command to run tests
 script: py.test tests
