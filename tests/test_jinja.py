@@ -159,7 +159,7 @@ def test_pagination_with_wrong_page_obj_should_fail():
         'request': request,
     }
 
-    with pytest.raises(TemplateSyntaxError):
+    with pytest.raises(TemplateError):
         tpl.render(**ctx)
 
 
@@ -174,7 +174,7 @@ def test_pagination_with_str_num_links_should_fail():
         'request': request,
     }
 
-    with pytest.raises(TemplateSyntaxError):
+    with pytest.raises(TemplateError):
         tpl.render(**ctx)
 
 
@@ -189,5 +189,5 @@ def test_pagination_with_non_int_num_links_should_fail():
         'request': request,
     }
 
-    with pytest.raises(TemplateSyntaxError):
+    with pytest.raises(TemplateError):
         tpl.render(**ctx)
