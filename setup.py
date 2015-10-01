@@ -39,9 +39,7 @@ setup(
 
     keywords='django pagination page links',
     install_requires=['Django'],
-
     extras_require={
-        'test': ['pytest', 'pytest-cov', 'pytest-django'],
-        'dev': ['Jinja2', 'ipython']
-    },
+        'test': ['pytest', 'pytest-cov', 'pytest-django', 'Jinja2'],
+    }
 )
