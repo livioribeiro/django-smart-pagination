@@ -13,25 +13,31 @@ class PaginationExtension(Extension):
         lineno = next(parser.stream).lineno
 
         request = nodes.Name('request', 'load')
+
+        args = [request]
+
         try:
             page_obj = parser.parse_expression()
+            args.append(page_obj)
         except TemplateSyntaxError:
             raise TemplateSyntaxError(errors.MISSING_FIRST_ARG, lineno)
 
-        args = [request, page_obj]
-
-        if parser.stream.skip_if('comma'):
-            args.append(parser.parse_expression())
-        else:
+        try:
+            num_links = parser.parse_expression()
+            args.append(num_links)
+        except TemplateSyntaxError:
             raise TemplateSyntaxError(errors.MISSING_SECOND_ARG, lineno)
 
-        if parser.stream.skip_if('comma'):
-            var_name = parser.stream.expect('string').value
-        else:
+        try:
+            var_name = parser.parse_expression().name
+        except TemplateSyntaxError:
             raise TemplateSyntaxError(errors.MISSING_THIRD_ARG, lineno)
 
-        if parser.stream.skip_if('comma'):
-            args.append(parser.parse_expression())
+        try:
+            page_kwarg = parser.parse_expression()
+            args.append(page_kwarg)
+        except TemplateSyntaxError:
+            pass
 
         call_node = self.call_method('_make_paginator', args)
         body = parser.parse_statements(['name:endpaginate'], drop_needle=True)

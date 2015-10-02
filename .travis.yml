@@ -5,9 +5,9 @@ python:
   - "3.4"
   - "3.5"
 env:
-  - DJANGO="'Django>=1.6,<1.7'"
-  - DJANGO="'Django>=1.7,<1.8'"
-  - DJANGO="'Django>=1.8,<1.9'"
+  - DJANGO='Django>=1.6,<1.7'
+  - DJANGO='Django>=1.7,<1.8'
+  - DJANGO='Django>=1.8,<1.9'
 # command to install dependencies
 install:
   - pip install -q $DJANGO pytest-django Jinja2
