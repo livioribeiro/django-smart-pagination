@@ -15,28 +15,34 @@ def paginate(parser, token):
     elif len(contents) == 2:
         raise TemplateSyntaxError(errors.MISSING_SECOND_ARG)
     elif len(contents) == 3:
-        tag_name, page_obj, num_links = contents
-        page_kwarg = None
+        raise TemplateSyntaxError(errors.MISSING_THIRD_ARG)
     elif len(contents) == 4:
-        tag_name, page_obj, num_links, page_kwarg = contents
+        tag_name, page_obj, num_links, var_name = contents
+        page_kwarg = None
+    elif len(contents) == 5:
+        tag_name, page_obj, num_links, var_name, page_kwarg = contents
     else:
         raise TemplateSyntaxError(errors.WRONG_ARGS.format(contents[0]))
 
     nodelist = parser.parse(('endpaginate',))
     parser.delete_first_token()
 
-    return PaginationNode(nodelist, page_obj, num_links, page_kwarg)
+    var_name = var_name.strip('"\'')
+    page_kwarg = page_kwarg.strip('"\'') if page_kwarg is not None else None
+
+    return PaginationNode(nodelist, page_obj, num_links, var_name, page_kwarg)
 
 
 register.tag(paginate)
 
 
 class PaginationNode(template.Node):
-    def __init__(self, nodelist, page_obj, num_links, page_kwarg):
+    def __init__(self, nodelist, page_obj, num_links, var_name, page_kwarg):
         self.nodelist = nodelist
         self.page_obj = page_obj
         self.num_links = num_links
-        self.page_kwarg = page_kwarg.strip('"\'') if page_kwarg is not None else None
+        self.var_name = var_name
+        self.page_kwarg = page_kwarg
 
     def render(self, context):
         request = context.get('request', None)
@@ -58,12 +64,11 @@ class PaginationNode(template.Node):
                 raise template.TemplateSyntaxError(errors.WRONG_SECOND_ARG)
 
         query = pagination.process_querystring(request, self.page_kwarg) if request else None
-
         paginator = pagination.make_paginator(page_obj, num_links)
 
         if query:
             paginator.query = query
 
-        context.update({'paging': paginator})
+        context.update({self.var_name: paginator})
 
         return self.nodelist.render(context)

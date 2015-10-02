@@ -26,11 +26,16 @@ class PaginationExtension(Extension):
             raise TemplateSyntaxError(errors.MISSING_SECOND_ARG, lineno)
 
         if parser.stream.skip_if('comma'):
+            var_name = parser.stream.expect('string').value
+        else:
+            raise TemplateSyntaxError(errors.MISSING_THIRD_ARG, lineno)
+
+        if parser.stream.skip_if('comma'):
             args.append(parser.parse_expression())
 
         call_node = self.call_method('_make_paginator', args)
         body = parser.parse_statements(['name:endpaginate'], drop_needle=True)
-        body.insert(0, nodes.Assign(nodes.Name('paging', 'store'), call_node))
+        body.insert(0, nodes.Assign(nodes.Name(var_name, 'store'), call_node))
         return body
 
     @staticmethod

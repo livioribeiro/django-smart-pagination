@@ -18,7 +18,7 @@ env = Environment(extensions=[PaginationExtension])
 
 
 def test_pagination_without_query():
-    template_string = FORMAT_STRING.substitute(args='page_obj, 5')
+    template_string = FORMAT_STRING.substitute(args="page_obj, 5, 'paging'")
 
     request = HttpRequest()
 
@@ -33,7 +33,7 @@ def test_pagination_without_query():
 
 
 def test_pagination_with_query_without_page_kwarg():
-    template_string = FORMAT_STRING.substitute(args='page_obj, 5')
+    template_string = FORMAT_STRING.substitute(args="page_obj, 5, 'paging'")
 
     request = HttpRequest()
     request.GET.update({
@@ -54,7 +54,7 @@ def test_pagination_with_query_without_page_kwarg():
 
 
 def test_pagination_with_query_and_page_kwarg():
-    template_string = FORMAT_STRING.substitute(args="page_obj, 5, 'page'")
+    template_string = FORMAT_STRING.substitute(args="page_obj, 5, 'paging', 'page'")
 
     request = HttpRequest()
     request.GET.update({
@@ -76,8 +76,8 @@ def test_pagination_with_query_and_page_kwarg():
     assert 'page=2' not in response
 
 
-def test_pagination_without_num_links_variable():
-    template_string = FORMAT_STRING.substitute(args='page_obj, num_links')
+def test_pagination_with_num_links_variable():
+    template_string = FORMAT_STRING.substitute(args="page_obj, num_links, 'paging'")
 
     request = HttpRequest()
 
@@ -93,7 +93,7 @@ def test_pagination_without_num_links_variable():
 
 
 def test_pagination_without_request_should_not_generate_querystring():
-    template_string = FORMAT_STRING.substitute(args="page_obj, 5, 'page'")
+    template_string = FORMAT_STRING.substitute(args="page_obj, 5, 'paging', 'page'")
 
     request = HttpRequest()
     request.GET.update({
@@ -126,15 +126,22 @@ def test_pagination_without_num_links_should_fail():
         env.from_string(template_string)
 
 
+def test_pagination_without_var_name_should_fail():
+    template_string = FORMAT_STRING.substitute(args='page_obj, 5')
+
+    with pytest.raises(TemplateSyntaxError):
+        env.from_string(template_string)
+
+
 def test_pagination_with_too_many_args_should_fail():
-    template_string = FORMAT_STRING.substitute(args='page_obj, arg2, arg3, arg4')
+    template_string = FORMAT_STRING.substitute(args='page_obj, arg2, arg3, arg4, arg5')
 
     with pytest.raises(TemplateSyntaxError):
         env.from_string(template_string)
 
 
 def test_pagination_with_non_existent_variable():
-    template_string = FORMAT_STRING.substitute(args='page_obj, does_not_exist')
+    template_string = FORMAT_STRING.substitute(args="page_obj, does_not_exist, 'paging'")
 
     request = HttpRequest()
 
@@ -149,7 +156,7 @@ def test_pagination_with_non_existent_variable():
 
 
 def test_pagination_with_wrong_page_obj_should_fail():
-    template_string = FORMAT_STRING.substitute(args='page_obj, 5')
+    template_string = FORMAT_STRING.substitute(args="page_obj, 5, 'paging'")
 
     request = HttpRequest()
 
@@ -164,7 +171,7 @@ def test_pagination_with_wrong_page_obj_should_fail():
 
 
 def test_pagination_with_str_num_links_should_fail():
-    template_string = FORMAT_STRING.substitute(args="page_obj, 'abc'")
+    template_string = FORMAT_STRING.substitute(args="page_obj, 'abc', 'paging'")
 
     request = HttpRequest()
 
@@ -179,7 +186,7 @@ def test_pagination_with_str_num_links_should_fail():
 
 
 def test_pagination_with_non_int_num_links_should_fail():
-    template_string = FORMAT_STRING.substitute(args='page_obj, 2.5')
+    template_string = FORMAT_STRING.substitute(args="page_obj, 2.5, 'paging'")
 
     request = HttpRequest()
 
