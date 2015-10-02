@@ -1,8 +1,9 @@
-import math
+import math, sys
 import django
 from django.http import QueryDict
 
-DJANGO_18 = django.VERSION >= (1, 8)
+PYTHON_2 = sys.version_info < (3,)
+DJANGO_GTE_18 = django.VERSION >= (1, 8)
 
 
 class Page:
@@ -31,7 +32,13 @@ def make_paginator(page_obj, num_links):
     prev_page = page_obj.previous_page_number() if page_obj.has_previous() else None
     next_page = page_obj.next_page_number() if page_obj.has_next() else None
 
-    middle_point = math.ceil(num_links / 2)
+    # Try to play nice with Python 2
+    # Force float division before math.ceil
+    middle_point = math.ceil(num_links / 2.0)
+    if PYTHON_2:
+        # Convert float to int
+        middle_point = int(middle_point)
+
     first_page = page_obj.paginator.page_range[0] if page_count > num_links and number > middle_point else None
 
     last_page = page_obj.paginator.page_range[-1]
@@ -64,7 +71,7 @@ def process_querystring(request, page_kwarg):
     if page_kwarg and (len(request.GET) > 0):
         qs = request.GET.copy()
 
-        if DJANGO_18 or not isinstance(qs, QueryDict):
+        if DJANGO_GTE_18 or not isinstance(qs, QueryDict):
             new_qs = QueryDict('', mutable=True)
             new_qs.update(qs)
             qs = new_qs
