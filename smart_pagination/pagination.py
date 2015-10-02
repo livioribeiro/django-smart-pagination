@@ -1,4 +1,8 @@
 import math
+import django
+from django.http import QueryDict
+
+DJANGO_18 = django.VERSION >= (1, 8)
 
 
 class Page:
@@ -59,8 +63,15 @@ def make_paginator(page_obj, num_links):
 def process_querystring(request, page_kwarg):
     if page_kwarg and (len(request.GET) > 0):
         qs = request.GET.copy()
+
+        if DJANGO_18 or not isinstance(qs, QueryDict):
+            new_qs = QueryDict('', mutable=True)
+            new_qs.update(qs)
+            qs = new_qs
+
         if page_kwarg in qs:
             qs.pop(page_kwarg)
+
         return qs.urlencode()
 
     return ''
