@@ -7,27 +7,27 @@ odd_num_links = 5
 
 testargs = 'num_links, num_page, first_link, last_link, current_index'
 testdata = [
-    (odd_num_links, 1, 1, 5, 0),
-    (odd_num_links, 2, 1, 5, 1),
-    (odd_num_links, 3, 1, 5, 2),
-    (odd_num_links, 4, 2, 6, 2),
-    (odd_num_links, 5, 3, 7, 2),
-    (odd_num_links, 6, 4, 8, 2),
-    (odd_num_links, 7, 5, 9, 2),
-    (odd_num_links, 8, 6, 10, 2),
-    (odd_num_links, 9, 6, 10, 3),
-    (odd_num_links, 10, 6, 10, 4),
+    (odd_num_links, 1, 1, 5, 0),  # 1! 2 3 4 5
+    (odd_num_links, 2, 1, 5, 1),  # 1 2! 3 4 5
+    (odd_num_links, 3, 1, 5, 2),  # 1 2 3! 4 5
+    (odd_num_links, 4, 2, 6, 2),  # 2 3 4! 5 6
+    (odd_num_links, 5, 3, 7, 2),  # 3 4 5! 6 7
+    (odd_num_links, 6, 4, 8, 2),  # 4 5 6! 7 8
+    (odd_num_links, 7, 5, 9, 2),  # 5 6 7! 8 9
+    (odd_num_links, 8, 6, 10, 2),  # 6 7 8! 9 10
+    (odd_num_links, 9, 6, 10, 3),  # 6 7 8 9! 10
+    (odd_num_links, 10, 6, 10, 4),  # 6 7 8 9 10!
 
-    (even_num_links, 1, 1, 6, 0),
-    (even_num_links, 2, 1, 6, 1),
-    (even_num_links, 3, 1, 6, 2),
-    (even_num_links, 4, 2, 7, 2),
-    (even_num_links, 5, 3, 8, 2),
-    (even_num_links, 6, 4, 9, 2),
-    (even_num_links, 7, 5, 10, 2),
-    (even_num_links, 8, 5, 10, 3),
-    (even_num_links, 9, 5, 10, 4),
-    (even_num_links, 10, 5, 10, 5),
+    (even_num_links, 1, 1, 6, 0),  # 1! 2 3 4 5 6
+    (even_num_links, 2, 1, 6, 1),  # 1 2! 3 4 5 6
+    (even_num_links, 3, 1, 6, 2),  # 1 2 3! 4 5 6
+    (even_num_links, 4, 2, 7, 2),  # 2 3 4! 5 6 7
+    (even_num_links, 5, 3, 8, 2),  # 3 4 5! 6 7 8
+    (even_num_links, 6, 4, 9, 2),  # 4 5 6! 7 8 9
+    (even_num_links, 7, 5, 10, 2),  # 5 6 7! 8 9 10
+    (even_num_links, 8, 5, 10, 3),  # 5 6 7 8! 9 10
+    (even_num_links, 9, 5, 10, 4),  # 5 6 7 8 9! 10
+    (even_num_links, 10, 5, 10, 5),  # 5 6 7 8 9 10!
 ]
 
 paginator = Paginator(range(1, 51), 5)

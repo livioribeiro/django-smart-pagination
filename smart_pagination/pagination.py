@@ -7,8 +7,8 @@ DJANGO_GTE_18 = django.VERSION >= (1, 8)
 
 
 class Page:
-    def __init__(self, current_number, page_number):
-        self.is_current = current_number == page_number
+    def __init__(self, current_page, page_number):
+        self.is_current = current_page == page_number
         self.number = page_number
 
 
@@ -18,11 +18,11 @@ class Paginator:
         for page_number in page_range:
             pages.append(Page(current_page, page_number))
 
-        self.first = first_page
-        self.prev = prev_page
+        self.first = Page(current_page, first_page)
+        self.prev = Page(current_page, prev_page)
         self.pages = pages
-        self.next = next_page
-        self.last = last_page
+        self.next = Page(current_page, next_page)
+        self.last = Page(current_page, last_page)
 
 
 def make_paginator(page_obj, num_links):
