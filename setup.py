@@ -14,7 +14,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='django-smart-pagination',
-    version='1.0.0',
+    version='1.0.1',
     packages=find_packages(exclude=['tests']),
     description='Generate pagination links in Django Templates',
     long_description=long_description,

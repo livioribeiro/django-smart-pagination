@@ -36,7 +36,6 @@ paginator = Paginator(range(1, 51), 5)
 @pytest.mark.parametrize(testargs, testdata)
 def test_paginator_links(num_links, num_page, first_link, last_link, current_index):
     page = paginator.page(num_page)
-
     paging = make_paginator(page, num_links)
 
     current = None
@@ -50,3 +49,59 @@ def test_paginator_links(num_links, num_page, first_link, last_link, current_ind
     assert paging.pages[0].number == first_link, 'first link was {}'.format(paging.pages[0].number)
     assert paging.pages[-1].number == last_link, 'last link was {}'.format(paging.pages[-1].number)
     assert paging.pages[current_index].is_current, 'current was {}'.format(current)
+
+
+def test_first_page_is_none_when_in_first_page():
+    page = paginator.page(1)
+    paging = make_paginator(page, odd_num_links)
+
+    assert paging.first is None
+
+
+def test_first_page_is_not_none_when_not_in_first_page():
+    page = paginator.page(4)
+    paging = make_paginator(page, odd_num_links)
+
+    assert paging.first is not None
+
+
+def test_last_page_is_none_when_in_last_page():
+    page = paginator.page(paginator.page_range[-1])
+    paging = make_paginator(page, odd_num_links)
+
+    assert paging.last is None
+
+
+def test_last_page_is_not_none_when_not_in_last_page():
+    page = paginator.page(4)
+    paging = make_paginator(page, odd_num_links)
+
+    assert paging.last is not None
+
+
+def test_prev_page_is_none_when_there_is_not_prev_page():
+    page = paginator.page(1)
+    paging = make_paginator(page, odd_num_links)
+
+    assert paging.prev is None
+
+
+def test_prev_page_is_not_none_when_there_is_prev_page():
+    page = paginator.page(2)
+    paging = make_paginator(page, odd_num_links)
+
+    assert paging.prev is not None
+
+
+def test_next_page_is_none_when_there_is_not_next_page():
+    page = paginator.page(paginator.page_range[-1])
+    paging = make_paginator(page, odd_num_links)
+
+    assert paging.next is None
+
+
+def test_next_page_is_not_none_when_there_is_next_page():
+    page = paginator.page(2)
+    paging = make_paginator(page, odd_num_links)
+
+    assert paging.next is not None

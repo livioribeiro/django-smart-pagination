@@ -18,11 +18,11 @@ class Paginator:
         for page_number in page_range:
             pages.append(Page(current_page, page_number))
 
-        self.first = Page(current_page, first_page)
-        self.prev = Page(current_page, prev_page)
+        self.first = Page(current_page, first_page) if first_page is not None else None
+        self.prev = Page(current_page, prev_page) if prev_page is not None else None
         self.pages = pages
-        self.next = Page(current_page, next_page)
-        self.last = Page(current_page, last_page)
+        self.next = Page(current_page, next_page) if next_page is not None else None
+        self.last = Page(current_page, last_page) if last_page is not None else None
 
 
 def make_paginator(page_obj, num_links):
