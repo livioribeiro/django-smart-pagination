@@ -12,10 +12,18 @@ Works with Django Templates and Jinja2.
 Usage
 -----
 
+First add ``smart_pagination`` to your installed apps:
+
+.. code:: python
+
+    INSTALLED_APPS = [
+        'smart_pagination'
+    ]
+
 Use a pagination block passing the ``Page`` object, the number of links (literal of variable)
 and the name to associate the ``smart_pagination.Paginator`` object.
 
-.. code-block:: django
+.. code:: django
 
     {% load pagination_tags %}
     {% paginate page_obj num_links paging %}
@@ -36,7 +44,7 @@ next  Next ``Page``. Will be ``None`` if there is no next page.
 last  Last ``Page``. Will be ``None`` if it is already the last page.
 ===== =================================================================
 
-.. code-block:: django
+.. code:: django
 
     {% load pagination_tags %}
     {% paginate page_obj num_links paging %}
@@ -66,7 +74,7 @@ last  Last ``Page``. Will be ``None`` if it is already the last page.
 If you are sending the page_kwarg as a query parameter, you can optionally pass a fourth argument with the name
 of the page_kwarg and the ``Paginator`` will provide the query string without the page_kwarg:
 
-.. code-block:: django
+.. code:: django
 
     {% load pagination_tags %}
     {% paginate page_obj num_links paging 'page' %}
